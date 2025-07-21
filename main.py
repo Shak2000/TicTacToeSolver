@@ -17,15 +17,6 @@ class Game:
         self.player = 'X'
         self.history = []
 
-    def get_winner(self, x, y, dx, dy):
-        for i in range(y, y + dy * self.height, dy):
-            for j in range(x, x + dx * self.width, dx):
-                if not (0 <= x < self.width and 0 <= y < self.height and self.board[y][x] == self.player):
-                    return None
-            if i == y + dy * (self.height - 1):
-                return self.player
-        return None
-
     def switch(self):
         if self.player == 'X':
             self.player = 'O'
