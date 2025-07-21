@@ -72,6 +72,29 @@ button:hover {
     font-weight: bold;
     margin-top: 8px;
 }
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.depth-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.depth-row label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+#depth {
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
 @media (max-width: 500px) {
     .container {
         max-width: 98vw;
@@ -85,4 +108,4 @@ button:hover {
         height: 32px;
         font-size: 1.2rem;
     }
-} 
+}

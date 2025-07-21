@@ -128,23 +128,11 @@ function checkWinner() {
 
 function aiMove() {
     if (!gameActive) return;
-    if (height === 3 && width === 3 && win === 3) {
-        // Use minimax for 3x3
-        const move = getBestMove(player, 9);
-        if (move) makeMove(move.x, move.y);
-    } else {
-        // For larger boards, pick a random move for now
-        const moves = [];
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                if (board[y][x] === '.') moves.push({x, y});
-            }
-        }
-        if (moves.length > 0) {
-            const move = moves[Math.floor(Math.random() * moves.length)];
-            makeMove(move.x, move.y);
-        }
-    }
+    const depthInput = document.getElementById('depth');
+    let depth = parseInt(depthInput ? depthInput.value : '6');
+    if (isNaN(depth) || depth < 1) depth = 6;
+    const move = getBestMove(player, depth);
+    if (move) makeMove(move.x, move.y);
 }
 
 function getBestMove(aiPlayer, depth) {
@@ -155,7 +143,7 @@ function getBestMove(aiPlayer, depth) {
             if (board[y][x] === '.') {
                 board[y][x] = aiPlayer;
                 rem--;
-                let score = minimax(depth - 1, false, aiPlayer, aiPlayer === 'X' ? 'O' : 'X');
+                let score = minimax(depth - 1, false, aiPlayer, aiPlayer === 'X' ? 'O' : 'X', -Infinity, Infinity);
                 board[y][x] = '.';
                 rem++;
                 if (score > bestScore) {
@@ -168,29 +156,71 @@ function getBestMove(aiPlayer, depth) {
     return move;
 }
 
-function minimax(depth, isMax, aiPlayer, currentPlayer) {
+function minimax(depth, isMax, aiPlayer, currentPlayer, alpha, beta) {
     const winner = checkWinner();
-    if (winner === aiPlayer) return 100;
-    if (winner && winner !== aiPlayer) return -100;
-    if (rem === 0 || depth === 0) return 0;
+    if (winner === aiPlayer) return 100000;
+    if (winner && winner !== aiPlayer) return -100000;
+    if (rem === 0 || depth === 0) return evaluate(aiPlayer);
     let best = isMax ? -Infinity : Infinity;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             if (board[y][x] === '.') {
                 board[y][x] = currentPlayer;
                 rem--;
-                let score = minimax(depth - 1, !isMax, aiPlayer, currentPlayer === 'X' ? 'O' : 'X');
+                let score = minimax(depth - 1, !isMax, aiPlayer, currentPlayer === 'X' ? 'O' : 'X', alpha, beta);
                 board[y][x] = '.';
                 rem++;
                 if (isMax) {
                     best = Math.max(best, score);
+                    alpha = Math.max(alpha, best);
                 } else {
                     best = Math.min(best, score);
+                    beta = Math.min(beta, best);
                 }
+                if (beta <= alpha) break;
             }
         }
     }
     return best;
+}
+
+function evaluate(player) {
+    const opponent = player === 'X' ? 'O' : 'X';
+    let score = 0;
+    // Center bonus for 3x3
+    if (height === 3 && width === 3) {
+        if (board[1][1] === player) score += 1000;
+        if (board[1][1] === opponent) score -= 1000;
+    }
+    // Directions: right, down, diag down-right, diag down-left
+    const directions = [ [1,0], [0,1], [1,1], [-1,1] ];
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            if (board[y][x] !== '.') continue;
+            for (let [dx, dy] of directions) {
+                let line = [];
+                for (let k = 0; k < win; k++) {
+                    let nx = x + dx*k, ny = y + dy*k;
+                    if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                        line.push(board[ny][nx]);
+                    } else {
+                        break;
+                    }
+                }
+                if (line.length === win) {
+                    if (!line.includes(opponent)) {
+                        let count = line.filter(c => c === player).length;
+                        score += Math.pow(10, count);
+                    }
+                    if (!line.includes(player)) {
+                        let count = line.filter(c => c === opponent).length;
+                        score -= Math.pow(10, count);
+                    }
+                }
+            }
+        }
+    }
+    return score;
 }
 
 startBtn.addEventListener('click', startGame);
@@ -200,4 +230,4 @@ aiBtn.addEventListener('click', aiMove);
 
 // Initial render
 renderBoard();
-statusDiv.textContent = 'Click "Start New Game" to begin.'; 
+statusDiv.textContent = 'Click "Start New Game" to begin.';

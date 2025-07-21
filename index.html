@@ -17,12 +17,18 @@
         </div>
         <div id="board"></div>
         <div id="ui-controls" style="display:none;">
-            <button id="undo-btn">Undo</button>
-            <button id="restart-btn">Restart</button>
-            <button id="ai-btn">Computer Move</button>
+            <div class="button-row">
+                <button id="undo-btn">Undo</button>
+                <button id="restart-btn">Restart</button>
+                <button id="ai-btn">Computer Move</button>
+            </div>
+            <div class="depth-row">
+                <label for="depth">Depth:</label>
+                <input type="number" id="depth" min="1" max="10" value="6" style="width:60px; margin-left:6px;">
+            </div>
         </div>
         <div id="status"></div>
     </div>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
