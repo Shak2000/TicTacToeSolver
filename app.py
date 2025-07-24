@@ -22,8 +22,8 @@ async def get_script():
 
 
 @app.post("/start")
-async def start(height: int = 3, width: int = 3, win: int = 3):
-    game.start(height, width, win)
+async def start(height: int = 3, width: int = 3, win: int = 3, misere: bool = False):
+    game.start(height, width, win, misere)
 
 
 @app.post("/switch")
@@ -64,3 +64,23 @@ async def minimax(depth, alpha, beta, player, root_player):
 @app.get("/get_ai_move")
 async def get_ai_move(depth):
     return game.get_ai_move(depth)
+
+
+@app.get("/misere")
+async def misere():
+    return game.misere
+
+
+@app.get("/misere_evaluate")
+async def misere_evaluate(player):
+    return game.misere_evaluate(player)
+
+
+@app.get("/misere_minimax")
+async def misere_minimax(depth, alpha, beta, player, root_player):
+    return game.misere_minimax(depth, alpha, beta, player, root_player)
+
+
+@app.get("/get_misere_ai_move")
+async def get_misere_ai_move(depth):
+    return game.get_misere_ai_move(depth)
