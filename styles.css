@@ -5,7 +5,7 @@ body {
     padding: 0;
 }
 .container {
-    max-width: 400px;
+    max-width: 500px;
     margin: 40px auto;
     background: #fff;
     border-radius: 10px;
@@ -20,7 +20,12 @@ h1 {
     margin-bottom: 16px;
 }
 #game-controls label {
-    margin: 0 8px;
+    margin: 0 12px 0 0;
+    display: inline-flex;
+    align-items: center;
+}
+#game-controls input[type="checkbox"] {
+    margin-right: 6px;
 }
 #start-btn {
     margin-top: 10px;
@@ -95,7 +100,7 @@ button:hover {
     border-radius: 4px;
     border: 1px solid #ccc;
 }
-@media (max-width: 500px) {
+@media (max-width: 600px) {
     .container {
         max-width: 98vw;
         padding: 8px;
