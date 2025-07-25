@@ -1,118 +1,147 @@
 # Tic-Tac-Toe Solver
 
-A customizable Tic-Tac-Toe game with AI opponent, supporting variable board sizes and win conditions. Features both a web interface and command-line interface.
+A sophisticated tic-tac-toe game with AI solver capabilities, supporting customizable board sizes, win conditions, and both regular and misère game modes. Features both a modern web interface and command-line interface.
 
 ## Features
 
-- **Customizable Board**: Play on boards from 3x3 up to 10x10
-- **Variable Win Conditions**: Set custom win requirements (3-in-a-row, 4-in-a-row, etc.)
-- **AI Opponent**: Minimax algorithm with alpha-beta pruning and configurable difficulty
-- **Multiple Interfaces**: Web UI and command-line interface
-- **Game Controls**: Undo moves, restart games, and step-by-step gameplay
-- **Responsive Design**: Mobile-friendly web interface
+- **Customizable Game Settings**
+  - Variable board dimensions (3x3 to 10x10)
+  - Adjustable win condition (3 to 10 in a row)
+  - Regular and Misère game modes
+  
+- **AI Solver**
+  - Minimax algorithm with alpha-beta pruning
+  - Configurable search depth
+  - Specialized misère mode strategy
+  - Optimal play for standard 3x3 boards
+  
+- **Dual Interface**
+  - Modern responsive web UI
+  - Command-line interface for terminal use
+  
+- **Game Features**
+  - Move history with undo functionality
+  - Game restart capability
+  - Real-time game state updates
 
-## Quick Start
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd tic-tac-toe-solver
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
 
 ### Web Interface
 
-1. Open `index.html` in your web browser
-2. Set your preferred board dimensions and win condition
-3. Click "Start New Game"
-4. Click cells to make moves or use "Computer Move" for AI assistance
+1. Start the web server:
+```bash
+uvicorn app:app --reload
+```
+
+2. Open your browser and navigate to `http://localhost:8000`
+
+3. Configure your game settings:
+   - **Height/Width**: Board dimensions (3-10)
+   - **Win**: Number in a row needed to win (3-10)
+   - **Misère Mode**: Check to enable misère rules (lose by getting a line)
+
+4. Click "Start New Game" and begin playing!
+
+#### Web Interface Controls
+- **Click cells** to make moves
+- **Computer Move**: Let the AI make the next move
+- **Undo**: Revert the last move
+- **Restart**: Start over with same settings
+- **Depth**: Adjust AI thinking depth (1-10)
 
 ### Command Line Interface
 
+Run the command-line version:
 ```bash
 python main.py
 ```
 
 Follow the interactive prompts to:
-- Start new games with custom settings
-- Make moves by entering coordinates
-- Get AI assistance with configurable search depth
+- Choose between regular and misère modes
+- Set board dimensions and win conditions
+- Make moves or request AI moves
 - Undo moves and restart games
 
-### Web Server (FastAPI)
+## Game Modes
 
-```bash
-pip install fastapi uvicorn
-uvicorn app:app --reload
-```
+### Regular Mode
+Standard tic-tac-toe rules - first player to get the required number in a row (horizontally, vertically, or diagonally) wins.
 
-Then visit `http://localhost:8000` in your browser.
+### Misère Mode
+Reverse tic-tac-toe - the player who is **forced** to complete a line **loses**. This creates a completely different strategic game where you want to avoid winning lines while forcing your opponent into them.
 
-## Game Configuration
+## AI Strategy
 
-- **Height/Width**: Board dimensions (3-10)
-- **Win**: Number of consecutive pieces needed to win (3-10)
-- **AI Depth**: Minimax search depth for computer moves (1-10)
+### Regular Mode
+- Uses minimax with alpha-beta pruning
+- Evaluates positions based on potential winning lines
+- Prioritizes center control on 3x3 boards
+- Searches to full depth on 3x3 for perfect play
 
-## AI Algorithm
-
-The computer opponent uses the **Minimax algorithm** with:
-- **Alpha-beta pruning** for performance optimization
-- **Strategic evaluation** considering center control and line potential
-- **Configurable depth** for adjustable difficulty levels
-
-For 3x3 boards, the AI searches the entire game tree for perfect play. Larger boards use depth-limited search with heuristic evaluation.
-
-## File Structure
-
-```
-├── index.html          # Web interface
-├── styles.css          # Styling for web UI
-├── script.js           # Frontend game logic and AI
-├── main.py            # Command-line interface and core game logic
-├── app.py             # FastAPI web server
-└── README.md          # This file
-```
+### Misère Mode
+- Specialized evaluation function that avoids creating wins
+- Strategic opening play (center control for X on 3x3)
+- Mirror strategy implementation
+- Careful endgame analysis to force opponent losses
 
 ## Technical Details
 
-### Core Components
+### Architecture
+- **Backend**: FastAPI web framework
+- **Frontend**: Vanilla JavaScript with modern CSS
+- **Game Logic**: Pure Python implementation
+- **AI**: Minimax algorithm with alpha-beta pruning
 
-- **Game Class** (`main.py`): Core game logic, board management, and AI
-- **Web Interface** (`script.js`): Browser-based gameplay with interactive UI
-- **FastAPI Server** (`app.py`): RESTful API endpoints for web integration
+### Files Structure
+- `main.py`: Core game logic and CLI interface
+- `app.py`: FastAPI web server and API endpoints
+- `index.html`: Web interface structure
+- `styles.css`: Modern responsive styling
+- `script.js`: Frontend game interaction logic
+- `requirements.txt`: Python dependencies
 
-### AI Implementation
-
-The minimax algorithm evaluates positions by:
-1. Checking for immediate wins/losses
-2. Evaluating board positions with strategic scoring
-3. Recursively exploring possible moves up to specified depth
-4. Using alpha-beta pruning to eliminate suboptimal branches
-
-### Evaluation Heuristics
-
-- **Center control bonus** (especially important for 3x3)
-- **Line potential scoring** based on partial sequences
-- **Blocking opponent threats** with negative scoring
-- **Exponential scoring** for multiple pieces in winning lines
-
-## Browser Compatibility
-
-The web interface works in all modern browsers including:
-- Chrome/Chromium
-- Firefox
-- Safari
-- Edge
+### API Endpoints
+- `GET /`: Serve web interface
+- `POST /start`: Initialize new game
+- `POST /move`: Make a move
+- `POST /undo`: Undo last move
+- `POST /restart`: Restart current game
+- `GET /get_ai_move`: Get AI move for regular mode
+- `GET /get_misere_ai_move`: Get AI move for misère mode
+- `GET /state`: Get current game state
 
 ## Performance Notes
 
-- **3x3 boards**: AI uses complete game tree analysis
-- **Larger boards**: Depth-limited search with configurable limits
-- **Alpha-beta pruning**: Significantly reduces search time
-- **Responsive UI**: Optimized for both desktop and mobile devices
+- **3x3 Regular**: AI plays optimally (searches full game tree)
+- **Larger Boards**: Configurable depth limiting for reasonable response times
+- **Misère Mode**: Additional strategic considerations may require deeper search
 
 ## Contributing
 
-Feel free to contribute improvements such as:
-- Enhanced AI evaluation functions
-- Additional game variants
-- UI/UX improvements
-- Performance optimizations
+Feel free to submit issues and enhancement requests! Areas for potential improvement:
+- Additional AI difficulty levels
+- Tournament mode for multiple games
+- Move suggestion highlighting
+- Game analysis and statistics
+- Network multiplayer support
 
 ## License
 
 This project is open source and available under the MIT License.
+
+---
+
+Enjoy playing and exploring the strategic depths of tic-tac-toe and its misère variant!
